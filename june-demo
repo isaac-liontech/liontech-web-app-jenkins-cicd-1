@@ -1,3 +1,10 @@
 Testing build automation with Jenkins
 This engineer Desmond -  build a new version of our application
 Added the sonarqube continuouse testing step
+
+
+         <server>
+            <id>nexus</id>
+             <username>liontech</username>
+             <password>Zion2020!@#</password>
+        </server>
