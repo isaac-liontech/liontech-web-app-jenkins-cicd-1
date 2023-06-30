@@ -1,3 +1,13 @@
 this is a new file
 all of this is mine
 added sonarqube step
+
+
+
+
+
+  <server>
+      <id>nexus</id>
+      <username>emmanuel</username>
+     <password>Never4Play</password>
+   </server>
