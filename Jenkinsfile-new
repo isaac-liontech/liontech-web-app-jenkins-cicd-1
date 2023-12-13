@@ -1,0 +1,68 @@
+node{
+        def mavenHome = tool name: 'maven'
+        stage('1clonecode'){
+            git 'https://github.com/isaac-liontech/liontech-web-app-jenkins-cicd-1.git'
+}
+
+
+        stage('2Test&Buildapp'){
+        sh "${mavenHome}/bin/mvn  clean package"
+
+}
+
+        stage('3Codequality'){
+         sh "${mavenHome}/bin/mvn       sonar:sonar"
+
+}
+
+
+       stage('4UploadArtifacts'){
+          sh "${mavenHome}/bin/mvn      deploy"
+
+
+}
+
+
+       stage('5deploy2DevEnv'){
+          sh "echo 'deploying to dev environment'  "
+          deploy adapters: [tomcat9(credentialsId: 'jenkins-project', path: '', url: 'http://44.208.27.105:8009/')], contextPath: 'dev', war: 'target/*.war'
+
+}
+
+       stage('6DeploytoTestENV'){
+            sh  "echo 'deploy to test Environment' "
+            deploy adapters: [tomcat9(credentialsId: 'jenkins-project', path: '', url: 'http://44.208.27.105:8009/')], contextPath: 'test', war: 'target/*.war'
+
+
+}
+
+      stage('7deploytoUAT'){
+           sh "echo 'deploy to UAT or staging environment'"
+           deploy adapters: [tomcat9(credentialsId: 'jenkins-project', path: '', url: 'http://44.208.27.105:8009/')], contextPath: 'stage', war: 'target/*.war'
+
+}
+
+     stage('8approval&Review+prep4prod'){
+         sh "echo 'application is ready for review and prod release'"
+         timeout ('time:5, unit DAYS'){
+         input message: "App is ready for release to proc, please review"
+}
+
+}
+
+      stage('90EPLOY2PROD'){
+           sh "sleep 50"
+           deploy adapters: [tomcat9(credentialsId: 'jenkins-project', path: '', url: 'http://44.208.27.105:8009/')], contextPath: 'production', war: 'target/*.war'
+
+}
+
+
+
+     stage('congratulationsforrelease'){
+     echo 'congratulations for LMS v1 prod release'
+     }
+
+
+
+}
+
